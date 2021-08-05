@@ -1,21 +1,15 @@
-id: aaa
-title: bbb
-version: 1.1.1
+id: reearth-plugin-test
+title: Test Plug-in
+version: 1.0.0
 extensions:
-  - id: hoge
-    type: primitive
+  - id: map
+    type: block
     visualizer: cesium
+    title: Map Block
     schema:
       groups:
         - id: default
-          representativeField: a
           fields:
-            - id: a
-              type: bool
-              defaultValue: true
-              availableIf:
-                field: b
-                type: number
-                value: 1
-            - id: b
-              type: number
+            - id: location
+              type: latlng
+              title: Location
