@@ -1,4 +1,4 @@
-const initialtext = reearth.block.property && reearth.block.property.default ? reearth.block.property.default.text || "" : "";
+const getText = () => reearth.widget.property && reearth.widget.property.default ? reearth.widget.property.default.text || "" : "";
 const html = `
 <h1 id="text"></h1>
 <style>
@@ -15,12 +15,11 @@ const html = `
     if (e.source !== parent) return;
     cb(e.data);
   });
-  cb(${JSON.stringify(initialtext)});
+  cb(${JSON.stringify(getText())});
 </script>
 `;
 
 reearth.ui.show(html);
 reearth.on("update", () => {
-  const text = reearth.block.property && reearth.block.property.default ? reearth.block.property.default.text || "" : "";
-  reearth.ui.postMessage(text);
+  reearth.ui.postMessage(getText());
 });
