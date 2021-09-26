@@ -2,6 +2,17 @@ id: reearth-plugin-test
 title: Test Plug-in
 version: 1.0.0
 extensions:
+  - id: text
+    type: widget
+    visualizer: cesium
+    title: Text Widget
+    schema:
+      groups:
+        - id: default
+          fields:
+            - id: text
+              type: string
+              title: Text
   - id: map
     type: block
     visualizer: cesium
