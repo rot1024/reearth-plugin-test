@@ -12,6 +12,13 @@ extensions:
             - id: text
               type: string
               title: Text
+  - id: iss
+    type: widget
+    name: ISS Widget
+    widgetLayout:
+      expandable:
+        horizontally: true
+        vertically: true
   - id: map
     type: block
     name: Map Block
