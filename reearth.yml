@@ -1,11 +1,10 @@
 id: reearth-plugin-test
-title: Test Plug-in
+name: Test Plug-in
 version: 1.0.0
 extensions:
   - id: text
     type: widget
-    visualizer: cesium
-    title: Text Widget
+    name: Text Widget
     schema:
       groups:
         - id: default
@@ -15,8 +14,7 @@ extensions:
               title: Text
   - id: map
     type: block
-    visualizer: cesium
-    title: Map Block
+    name: Map Block
     schema:
       groups:
         - id: default
