@@ -41,7 +41,9 @@ const html = `
 
 reearth.ui.show(html);
 reearth.on("message", msg => {
-  reearth.visualizer.camera.flyTo({
+  console.log("iss: message", msg);
+  const flyTo = reearth.visualizer.flyTo ?? reearth.visualizer.camera.flyTo;
+  flyTo({
     lat: msg.lat,
     lng: msg.lng,
     alt: msg.alt,

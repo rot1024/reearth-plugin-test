@@ -16,7 +16,7 @@ extensions:
     type: widget
     name: ISS Widget
     widgetLayout:
-      expandable:
+      extendable:
         horizontally: true
         vertically: true
   - id: map
