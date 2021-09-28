@@ -8,14 +8,23 @@ const html = `
 <p><button id="update">Update</button> <button id="jump">Jump!</button></p>
 </div>
 <style>
-  html, body {
+  body {
     margin: 0;
-    background: transparent;
+    width: 300px;
+  }
+  body.extended {
+    width: 100%;
+    height: 100%;
   }
   #wrapper {
     border: 2px solid blue;
     border-radius: 5px;
     background-color: rgba(111, 111, 111, 0.5);
+    box-sizing: border-box;
+  }
+  body.extended #wrapper {
+    width: 100%;
+    height: 100%;
   }
 </style>
 <script>
@@ -23,7 +32,7 @@ const html = `
   const update = () => {
     fetch("https://api.wheretheiss.at/v1/satellites/25544").then(r => r.json()).then(data => {
       lat = data.latitude;
-      lon = data.longitude;
+      lng = data.longitude;
       alt = data.altitude;
       document.getElementById("lat").textContent = data.latitude;
       document.getElementById("lon").textContent = data.longitude;
@@ -31,17 +40,33 @@ const html = `
     });
   };
   document.getElementById("update").addEventListener("click", update);
-  document.getElementById("update").addEventListener("click", () => {
+  document.getElementById("jump").addEventListener("click", () => {
     if (lat === undefined) return;
     parent.postMessage({ lat, lng, alt }, "*");
   });
+
+  const extended = ${JSON.stringify(!!reearth.widget.extended)};
+  if (extended) {
+    document.body.classList.add("extended");
+  }
+  addEventListener("message", e => {
+    if (e.source !== parent) return;
+    if (e.extended) {
+      document.body.classList.add("extended");
+    } else {
+      document.body.classList.remove("extended");
+    }
+  });
+
   update();
 </script>
 `;
 
 reearth.ui.show(html);
+reearth.on("update", () => {
+  reearth.ui.postMessage({ extended: !!reearth.widget.extended });
+});
 reearth.on("message", msg => {
-  console.log("iss: message", msg);
   const flyTo = reearth.visualizer.flyTo ?? reearth.visualizer.camera.flyTo;
   flyTo({
     lat: msg.lat,
