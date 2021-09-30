@@ -68,13 +68,13 @@ const html = `
   });
 
   const updateExtended = e => {
-    if (!e) return;
-    if (e.horizontally) {
+    console.log("extended", e);
+    if (e && e.horizontally) {
       document.documentElement.classList.add("extendedh");
     } else {
       document.documentElement.classList.remove("extendedh");
     }
-    if (e.vertically) {
+    if (e && e.vertically) {
       document.documentElement.classList.add("extendedv");
     } else {
       document.documentElement.classList.remove("extendedv");
@@ -83,6 +83,7 @@ const html = `
 
   addEventListener("message", e => {
     if (e.source !== parent || !e.extended) return;
+    console.log("message", e);
     updateExtended(e.extended);
   });
 
