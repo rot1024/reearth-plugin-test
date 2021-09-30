@@ -68,6 +68,7 @@ const html = `
   });
 
   const updateExtended = e => {
+    if (!e.extended) return;
     if (e.extended.horizontally) {
       document.documentElement.classList.add("extendedh");
     } else {
@@ -100,7 +101,7 @@ reearth.on("message", msg => {
   reearth.visualizer.camera.flyTo({
     lat: msg.lat,
     lng: msg.lng,
-    alt: msg.alt,
+    height: msg.alt,
     heading: 0,
     pitch: -Math.PI/2,
     roll: 0,
