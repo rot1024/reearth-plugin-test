@@ -1,12 +1,5 @@
 const getText = () => reearth.widget.property && reearth.widget.property.default ? reearth.widget.property.default.text || "" : "";
 const html = `
-<div id="wrapper">
-<h1>Current ISS location</h1>
-<p>Latitude: <span id="lat">-</span></p>
-<p>Longitude: <span id="lon">-</span></p>
-<p>Altitude: <span id="alt">-</span>km</p>
-<p><button id="update">Update</button> <button id="jump">Jump!</button></p>
-</div>
 <style>
   body {
     margin: 0;
@@ -31,22 +24,46 @@ const html = `
     height: 100%;
   }
 </style>
+<div id="wrapper">
+  <h1>Current ISS location</h1>
+  <p>Latitude: <span id="lat">-</span></p>
+  <p>Longitude: <span id="lon">-</span></p>
+  <p>Altitude: <span id="alt">-</span>km</p>
+  <p><button id="update">Update</button> <button id="jump">Jump</button> <button id="follow">Follow</button></p>
+</div>
 <script>
-  let lat, lng, alt;
+  let lat, lng, alt, timer;
   const update = () => {
-    fetch("https://api.wheretheiss.at/v1/satellites/25544").then(r => r.json()).then(data => {
+    return fetch("https://api.wheretheiss.at/v1/satellites/25544").then(r => r.json()).then(data => {
       lat = data.latitude;
       lng = data.longitude;
-      alt = data.altitude;
+      alt = data.altitude * 1000; // km -> m
       document.getElementById("lat").textContent = data.latitude;
       document.getElementById("lon").textContent = data.longitude;
       document.getElementById("alt").textContent = data.altitude;
     });
   };
+  const send = () => {
+    parent.postMessage({ lat, lng, alt }, "*");
+  };
+
   document.getElementById("update").addEventListener("click", update);
   document.getElementById("jump").addEventListener("click", () => {
     if (lat === undefined) return;
-    parent.postMessage({ lat, lng, alt }, "*");
+    send();
+  });
+  document.getElementById("follow").addEventListener("click", (e) => {
+    if (timer) {
+      clearTimeout(timer);
+      e.currentTarget.textContent = "Follow";
+      return;
+    }
+    const cb = () => update().then(() => {
+      send();
+      timer = setTimeout(cb, 2000);
+    });
+    timer = setTimeout(cb, 2000);
+    e.currentTarget.textContent = "Unfollow";
   });
 
   const extended = ${JSON.stringify(reearth.widget.extended)};
@@ -73,7 +90,9 @@ const html = `
 
 reearth.ui.show(html);
 reearth.on("update", () => {
-  reearth.ui.postMessage({ extended: reearth.widget.extended });
+  reearth.ui.postMessage({
+    extended: reearth.widget.extended
+  });
 });
 reearth.on("message", msg => {
   reearth.visualizer.camera.flyTo({
