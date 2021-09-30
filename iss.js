@@ -61,9 +61,9 @@ const html = `
     }
     const cb = () => update().then(() => {
       send();
-      timer = setTimeout(cb, 2000);
+      if (timer) timer = setTimeout(cb, 3000);
     });
-    timer = setTimeout(cb, 2000);
+    cb();
     e.currentTarget.textContent = "Unfollow";
   });
 
