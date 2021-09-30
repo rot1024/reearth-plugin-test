@@ -68,13 +68,13 @@ const html = `
   });
 
   const updateExtended = e => {
-    if (!e.extended) return;
-    if (e.extended.horizontally) {
+    if (!e) return;
+    if (e.horizontally) {
       document.documentElement.classList.add("extendedh");
     } else {
       document.documentElement.classList.remove("extendedh");
     }
-    if (e.extended.vertically) {
+    if (e.vertically) {
       document.documentElement.classList.add("extendedv");
     } else {
       document.documentElement.classList.remove("extendedv");
@@ -86,7 +86,7 @@ const html = `
     updateExtended(e.extended);
   });
 
-  updateExtended(${JSON.stringify(reearth.widget.extended)});
+  updateExtended(${JSON.stringify(reearth.widget.extended || null)});
   update();
 </script>
 `;
