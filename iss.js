@@ -68,7 +68,6 @@ const html = `
   });
 
   const updateExtended = e => {
-    console.log("extended", e);
     if (e && e.horizontally) {
       document.documentElement.classList.add("extendedh");
     } else {
@@ -82,9 +81,8 @@ const html = `
   };
 
   addEventListener("message", e => {
-    if (e.source !== parent || !e.extended) return;
-    console.log("message", e);
-    updateExtended(e.extended);
+    if (e.source !== parent || !e.data.extended) return;
+    updateExtended(e.data.extended);
   });
 
   updateExtended(${JSON.stringify(reearth.widget.extended || null)});
