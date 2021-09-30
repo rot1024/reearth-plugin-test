@@ -10,10 +10,11 @@ const html = `
 <style>
   body {
     margin: 0;
-    width: 300px;
   }
-  body.extended {
+  body.extendedh {
     width: 100%;
+  }
+  body.extendedv {
     height: 100%;
   }
   #wrapper {
@@ -21,9 +22,12 @@ const html = `
     border-radius: 5px;
     background-color: rgba(111, 111, 111, 0.5);
     box-sizing: border-box;
+    width: 300px;
   }
-  body.extended #wrapper {
+  .extendedh #wrapper {
     width: 100%;
+  }
+  .extendedv #wrapper {
     height: 100%;
   }
 </style>
@@ -45,16 +49,21 @@ const html = `
     parent.postMessage({ lat, lng, alt }, "*");
   });
 
-  const extended = ${JSON.stringify(!!reearth.widget.extended)};
+  const extended = ${JSON.stringify(reearth.widget.extended)};
   if (extended) {
     document.body.classList.add("extended");
   }
   addEventListener("message", e => {
-    if (e.source !== parent) return;
-    if (e.extended) {
-      document.body.classList.add("extended");
+    if (e.source !== parent || !e.extended) return;
+    if (e.extended.horizontally) {
+      document.body.classList.add("extendedh");
     } else {
-      document.body.classList.remove("extended");
+      document.body.classList.remove("extendedh");
+    }
+    if (e.extended.vertically) {
+      document.body.classList.add("extendedv");
+    } else {
+      document.body.classList.remove("extendedv");
     }
   });
 
@@ -64,18 +73,17 @@ const html = `
 
 reearth.ui.show(html);
 reearth.on("update", () => {
-  reearth.ui.postMessage({ extended: !!reearth.widget.extended });
+  reearth.ui.postMessage({ extended: reearth.widget.extended });
 });
 reearth.on("message", msg => {
-  const flyTo = reearth.visualizer.flyTo ?? reearth.visualizer.camera.flyTo;
-  flyTo({
+  reearth.visualizer.camera.flyTo({
     lat: msg.lat,
     lng: msg.lng,
     alt: msg.alt,
     heading: 0,
-    pitch: 90,
+    pitch: -Math.PI/2,
     roll: 0,
   }, {
-    duration: 2000
+    duration: 2
   });
 });
