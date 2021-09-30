@@ -4,10 +4,10 @@ const html = `
   body {
     margin: 0;
   }
-  body.extendedh {
+  .extendedh {
     width: 100%;
   }
-  body.extendedv {
+  .extendedv {
     height: 100%;
   }
   #wrapper {
@@ -17,10 +17,10 @@ const html = `
     box-sizing: border-box;
     width: 300px;
   }
-  .extendedh #wrapper {
+  .extendedh body, .extendedh #wrapper {
     width: 100%;
   }
-  .extendedv #wrapper {
+  .extendedv body, .extendedv #wrapper {
     height: 100%;
   }
 </style>
@@ -55,6 +55,7 @@ const html = `
   document.getElementById("follow").addEventListener("click", (e) => {
     if (timer) {
       clearTimeout(timer);
+      timer = undefined;
       e.currentTarget.textContent = "Follow";
       return;
     }
@@ -66,24 +67,25 @@ const html = `
     e.currentTarget.textContent = "Unfollow";
   });
 
-  const extended = ${JSON.stringify(reearth.widget.extended)};
-  if (extended) {
-    document.body.classList.add("extended");
-  }
-  addEventListener("message", e => {
-    if (e.source !== parent || !e.extended) return;
+  const updateExtended = e => {
     if (e.extended.horizontally) {
-      document.body.classList.add("extendedh");
+      document.documentElement.classList.add("extendedh");
     } else {
-      document.body.classList.remove("extendedh");
+      document.documentElement.classList.remove("extendedh");
     }
     if (e.extended.vertically) {
-      document.body.classList.add("extendedv");
+      document.documentElement.classList.add("extendedv");
     } else {
-      document.body.classList.remove("extendedv");
+      document.documentElement.classList.remove("extendedv");
     }
+  };
+
+  addEventListener("message", e => {
+    if (e.source !== parent || !e.extended) return;
+    updateExtended(e.extended);
   });
 
+  updateExtended(${JSON.stringify(reearth.widget.extended)});
   update();
 </script>
 `;
